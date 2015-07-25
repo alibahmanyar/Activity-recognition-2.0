@@ -32,13 +32,13 @@ def processdata(rdata):
         z = []
         for i in range(len(data[0])):
             if data[0][i] != "":
-                x.append(float(data[0][i]) / 9.81)
+                x.append(float(data[0][i]) / 9.80665)
         for i in range(len(data[1])):
             if data[1][i] != "":
-                y.append(float(data[1][i]) / 9.81)
+                y.append(float(data[1][i]) / 9.80665)
         for i in range(len(data[2])):
             if data[2][i] != "":
-                z.append(float(data[2][i]) / 9.81)
+                z.append(float(data[2][i]) / 9.80665)
         return [x, y, z]
 
 
