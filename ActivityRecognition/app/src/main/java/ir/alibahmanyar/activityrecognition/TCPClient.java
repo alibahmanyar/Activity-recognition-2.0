@@ -45,7 +45,7 @@ public class TCPClient {
             //here you must put your computer's IP address.
             InetAddress serverAddr = InetAddress.getByName(SERVERIP);
 
-            Log.e("TCP Client", "C: Connecting...");
+//            Log.e("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
             Socket socket = new Socket(serverAddr, SERVERPORT);
@@ -55,9 +55,9 @@ public class TCPClient {
                 //send the message to the server
                 out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
 
-                Log.e("TCP Client", "C: Sent.");
+//                Log.e("TCP Client", "C: Sent.");
 
-                Log.e("TCP Client", "C: Done.");
+//                Log.e("TCP Client", "C: Done.");
 
                 //receive the message which the server sends back
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -74,11 +74,11 @@ public class TCPClient {
 
                 }
 
-                Log.e("RESPONSE FROM SERVER", "S: Received Message: '" + serverMessage + "'");
+//                Log.e("RESPONSE FROM SERVER", "S: Received Message: '" + serverMessage + "'");
 
             } catch (Exception e) {
 
-                Log.e("TCP", "S: Error", e);
+//                Log.e("TCP", "S: Error", e);
 
             } finally {
                 //the socket must be closed. It is not possible to reconnect to this socket
@@ -88,7 +88,7 @@ public class TCPClient {
 
         } catch (Exception e) {
 
-            Log.e("TCP", "C: Error", e);
+//            Log.e("TCP", "C: Error", e);
 
         }
 
