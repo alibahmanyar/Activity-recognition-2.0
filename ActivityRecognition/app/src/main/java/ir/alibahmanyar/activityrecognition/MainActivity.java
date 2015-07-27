@@ -1,6 +1,7 @@
 package ir.alibahmanyar.activityrecognition;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.provider.Telephony;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -26,8 +28,16 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
+    @Override
+    protected void onRestart() {
+        mTcpClient.stopClient();
+        new connectTask().execute("");
+
+        super.onResume();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -45,6 +55,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             return true;
         }
 
@@ -107,7 +119,16 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             mTcpClient.run();
 
             return null;
-        }}
+        }
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            TextView activitytextview = (TextView)findViewById(R.id.activitytext);
+            activitytextview.setText(values[0]);
+
+        }
+
+    }
 
 
 

@@ -58,17 +58,18 @@ class GUI(FloatLayout):
 
         if not "None" in val:
             dt = processdata(val)
-            if isinstance(dt[0][0], list):
-                for i in range(len(dt)):
-                    for j in range(len(dt[i][0])):
-                        self.accdatasx.append(str(float(dt[i][0][j])))
-                        self.accdatasy.append(str(float(dt[i][1][j])))
-                        self.accdatasz.append(str(float(dt[i][2][j])))
-            else:
-                for i in range(len(dt[0])):
-                    self.accdatasx.append(str(float(dt[0][i])))
-                    self.accdatasy.append(str(float(dt[1][i])))
-                    self.accdatasz.append(str(float(dt[2][i])))
+            if dt!=False:
+                if isinstance(dt[0][0], list):
+                    for i in range(len(dt)):
+                        for j in range(len(dt[i][0])):
+                            self.accdatasx.append(str(float(dt[i][0][j])))
+                            self.accdatasy.append(str(float(dt[i][1][j])))
+                            self.accdatasz.append(str(float(dt[i][2][j])))
+                else:
+                    for i in range(len(dt[0])):
+                        self.accdatasx.append(str(float(dt[0][i])))
+                        self.accdatasy.append(str(float(dt[1][i])))
+                        self.accdatasz.append(str(float(dt[2][i])))
         if len(self.accdatasx) >= 128:
             activity = predict(self.accdatasx[-128:], self.accdatasy[-128:], self.accdatasz[-128:])
             self.accdatasx = self.accdatasx[-129:]

@@ -10,18 +10,27 @@ restrecv = 0
 
 def processdata(rdata):
     rdata = rdata.replace("\n", "")
+    if "##########" not in rdata or "^^^^^^^^^^" not in rdata or "**********" not in rdata or rdata.count("**********")<2:
+            return False
     if rdata.count("^^^^^^^^^^") > 1:
         rdata = rdata.split(" ##########")
         dataprs = []
         while '' in rdata:
             rdata.remove('')
         for i in range(len(rdata)):
-            rdata[i]=rdata[i]+ " ##########"
-
+            if not rdata[i].count("**********")<2 and "^^^^^^^^^^" in rdata[i] and "##########" not in rdata[i]:
+                rdata[i]=rdata[i]+ " ##########"
+            else:
+                rdata[i]="False"
         for i in range(len(rdata)):
-            dataprs.append(processdata(rdata[i]))
+            r=processdata(rdata[i])
+            if r!=False:
+                dataprs.append(r)
         return dataprs
     else:
+
+        if "##########" not in rdata or "^^^^^^^^^^" not in rdata or "**********" not in rdata or rdata.count("**********")<2 or rdata.count("^^^^^^^^^^")>1 or rdata.count("##########")>1:
+            return False
         data = rdata[12:-11]
         data = data.split(" ********** ")
         data[0] = data[0].split("|")
@@ -32,7 +41,7 @@ def processdata(rdata):
         z = []
         for i in range(len(data[0])):
             if data[0][i] != "":
-                x.append(float(data[0][i]) / 9.80665)
+                 x.append(float(data[0][i]) / 9.80665)
         for i in range(len(data[1])):
             if data[1][i] != "":
                 y.append(float(data[1][i]) / 9.80665)
@@ -40,6 +49,8 @@ def processdata(rdata):
             if data[2][i] != "":
                 z.append(float(data[2][i]) / 9.80665)
         return [x, y, z]
+
+
 
 
 def write(x, y, z):
