@@ -2,7 +2,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.support import install_twisted_reactor
 
 install_twisted_reactor()
-
+from time import time
 from functions import processdata, predict
 from kivy.app import App
 from kivy.uix.label import Label

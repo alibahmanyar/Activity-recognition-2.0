@@ -43,4 +43,23 @@
         android:layout_centerHorizontal="true"
 
         />
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reconnect"
+        android:id="@+id/reconnectbtn"
+        android:layout_below="@+id/startstopbtn"
+        android:onClick="reconnectbtn"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/startstopbtn"
+        android:layout_below="@+id/activitytext"
+        android:onClick="startstopbtn"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

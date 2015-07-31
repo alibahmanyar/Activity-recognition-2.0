@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -45,7 +47,30 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    
+    public void reconnectbtn(View v){
+        mTcpClient.stopClient();
+        new connectTask().execute("");
+        Button btn =(Button) findViewById(R.id.startstopbtn);
+        btn.setText("Stop");
+
+    }
+    public void startstopbtn(View v){
+        Button btn =(Button) findViewById(R.id.startstopbtn);
+        if (btn.getText()=="Stop"){
+            mTcpClient.stopClient();
+            btn.setText("Start");
+        }
+        else{
+            new connectTask().execute("");
+            btn.setText("Stop");
+
+
+        }
+
+
+
+
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
