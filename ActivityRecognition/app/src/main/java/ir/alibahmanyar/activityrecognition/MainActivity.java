@@ -138,7 +138,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
             TextView ztextview = (TextView)findViewById(R.id.z);
             ztextview.setText("Z: "+zs);
-            String msg = "^^^^^^^^^^ |" + xs + "|" + " ********** |" + ys + "|" + " ********** |" + zs + "| ##########";
+            String msg = '|'+xs+'|'+ys+'|'+zs+'|';
             if (mTcpClient != null) {
                 mTcpClient.sendMessage(msg);
             }
