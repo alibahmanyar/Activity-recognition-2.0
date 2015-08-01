@@ -12,9 +12,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.speech.tts.TextToSpeech;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
 import android.widget.TextView;
 
 
@@ -22,20 +27,38 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
     private TCPClient mTcpClient;
+    TextToSpeech t1;
+    String lastactivity = "How are you today?";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new connectTask().execute("");
+
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                   t1.setLanguage(Locale.US);
+
+
+                }
+            }
+        });
+        new connectTask().execute("");
     }
     @Override
     protected void onRestart() {
-        mTcpClient.stopClient();
+
         new connectTask().execute("");
+
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        Button btn =(Button) findViewById(R.id.startstopbtn);
+        btn.setText("STOP");
 
         super.onResume();
     }
@@ -50,25 +73,31 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void reconnectbtn(View v){
         mTcpClient.stopClient();
         new connectTask().execute("");
+        senSensorManager.unregisterListener(this);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         Button btn =(Button) findViewById(R.id.startstopbtn);
-        btn.setText("Stop");
+        btn.setText("STOP");
 
     }
     public void startstopbtn(View v){
         Button btn =(Button) findViewById(R.id.startstopbtn);
-        if (btn.getText()=="Stop"){
+
+        if (Objects.equals(btn.getText().toString(), "STOP")){
+            btn.setText("START");
+            senSensorManager.unregisterListener(this);
             mTcpClient.stopClient();
-            btn.setText("Start");
+//            Log.d("HI", "Stopped");
+
         }
-        else{
+        else if (Objects.equals(btn.getText().toString(), "START")){
+            btn.setText("STOP");
+            senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
             new connectTask().execute("");
-            btn.setText("Stop");
+//            Log.d("HI", "Started");
+
 
 
         }
-
-
-
 
     }
     @Override
@@ -126,6 +155,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        senSensorManager.unregisterListener(this);
+        mTcpClient.stopClient();
+        Log.d("Activity", "activity Stopped");
+    }
+
 
     public class connectTask extends AsyncTask<String,String,TCPClient> {
 
@@ -148,8 +185,18 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
+//            Log.d("HI", "Bye!");
             TextView activitytextview = (TextView)findViewById(R.id.activitytext);
             activitytextview.setText(values[0]);
+
+
+            lastactivity=values[0];
+
+           int a=t1.speak(values[0].toString(), TextToSpeech.QUEUE_ADD, null, "Activity");
+
+            String asa = Integer.toString(a);
+            Log.d("tts", asa);
+
 
         }
 

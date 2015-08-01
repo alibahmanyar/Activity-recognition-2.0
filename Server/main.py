@@ -72,9 +72,9 @@ class GUI(FloatLayout):
                         self.accdatasz.append(str(float(dt[2][i])))
         if len(self.accdatasx) >= 128:
             activity = predict(self.accdatasx[-128:], self.accdatasy[-128:], self.accdatasz[-128:])
-            self.accdatasx = self.accdatasx[-129:]
-            self.accdatasy = self.accdatasy[-129:]
-            self.accdatasz = self.accdatasz[-129:]
+            self.accdatasx = []
+            self.accdatasy = []
+            self.accdatasz = []
             if activity != "Error":
                 self.showactivity(activity)
                 self.app.sendactivity(activity)
@@ -98,7 +98,7 @@ class ServerApp(App):
         if activity != self.lastactivity:
             self.lastactivity = activity
             if activity and self.connection:
-                msg = str(activity).replace("_", " ") + "*****"
+                msg = str(activity).replace("_", " ") + "\n"
                 self.connection.write(msg)
 
     def print_message(self, msg):
