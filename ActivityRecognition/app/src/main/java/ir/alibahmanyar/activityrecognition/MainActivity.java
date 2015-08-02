@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         new connectTask().execute("");
 
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         Button btn =(Button) findViewById(R.id.startstopbtn);
         btn.setText("STOP");
 
@@ -74,7 +74,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         mTcpClient.stopClient();
         new connectTask().execute("");
         senSensorManager.unregisterListener(this);
-        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         Button btn =(Button) findViewById(R.id.startstopbtn);
         btn.setText("STOP");
 
@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         }
         else if (Objects.equals(btn.getText().toString(), "START")){
             btn.setText("STOP");
-            senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            senSensorManager.registerListener(this, senAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
             new connectTask().execute("");
 //            Log.d("HI", "Started");
 

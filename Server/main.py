@@ -4,7 +4,7 @@ import threading
 
 install_twisted_reactor()
 from time import time
-from functions import processdata, predict, Save_acc, predict_activity
+from functions import predict, Save_acc, predict_activity
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.core.window import Window
@@ -42,6 +42,7 @@ class GUI(FloatLayout):
         super(GUI, self).__init__()
         self.app = app
         self.lb = Label(text='Nothing happened yet!', color=(0, 0, 0, 1), markup=True, halign='center', valign='middle')
+        self.connect=False
         self.accdatasx = []
         self.accdatasy = []
         self.accdatasz = []
@@ -49,8 +50,9 @@ class GUI(FloatLayout):
         Clock.schedule_interval(self.make_thread_predict_activity, 2.56)
 
     def make_thread_predict_activity(self, dt):
-        thread2 = predict_activity(2, "Activity_predictor" , self)
-        thread2.start()
+        if self.connect:
+            thread2 = predict_activity(2, "Activity_predictor" , self)
+            thread2.start()
 
     def showactivity(self, activity):
         self.canvas.clear()
@@ -61,32 +63,9 @@ class GUI(FloatLayout):
                       size=(Window.height / 2.0, Window.height / 2.0))
 
     def on_massege_received(self, message):
-        print "Message:", message
+        # print "Message:", message
         thread = Save_acc(1, "Msg_saver", message)
         thread.start()
-
-        # if not "None" in val:
-        #     dt = processdata(val)
-        #     if dt!=False:
-        #         if isinstance(dt[0][0], list):
-        #             for i in range(len(dt)):
-        #                 for j in range(len(dt[i][0])):
-        #                     self.accdatasx.append(str(float(dt[i][0][j])))
-        #                     self.accdatasy.append(str(float(dt[i][1][j])))
-        #                     self.accdatasz.append(str(float(dt[i][2][j])))
-        #         else:
-        #             for i in range(len(dt[0])):
-        #                 self.accdatasx.append(str(float(dt[0][i])))
-        #                 self.accdatasy.append(str(float(dt[1][i])))
-        #                 self.accdatasz.append(str(float(dt[2][i])))
-        # if len(self.accdatasx) >= 128:
-        #     activity = predict(self.accdatasx[-128:], self.accdatasy[-128:], self.accdatasz[-128:])
-        #     self.accdatasx = []
-        #     self.accdatasy = []
-        #     self.accdatasz = []
-        #     if activity != "Error":
-        #         self.showactivity(activity)
-        #         self.app.sendactivity(activity)
 
 
 class ServerApp(App):
@@ -98,6 +77,7 @@ class ServerApp(App):
 
     def on_connection(self, connection):
         self.print_message("connected succesfully!")
+        self.gui.connect=True
         self.connection = connection
 
     def handle_message(self, msg):

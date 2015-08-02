@@ -37,104 +37,58 @@ class predict_activity(threading.Thread):
 
     def read_line(self):
         global acceleration_data
-        data = self.data
+
         line = ""
         cr = 0
         f = True
-        while cr < len(data) - 1:
-            # print 1
-            line += data[cr]
-            if data[cr + 1] == "\n":
+        while cr < len(self.data) - 1:
+
+            line += self.data[cr]
+            if self.data[cr + 1] == "\n":
                 f = False
                 break
 
             cr += 1
         if f:
             return False
-        if cr == len(data) - 2:
-            data = ""
+        if cr == len(self.data) - 2:
+            self.data = ""
             try:
                 acceleration_data = acceleration_data[cr + 2:]
             except:
                 acceleration_data = ""
         else:
-            data = data[cr + 2:]
+            self.data = self.data[cr + 2:]
             acceleration_data = acceleration_data[cr + 2:]
-        print "Line:", line
+
         return line
 
     def run(self):
-
         while True:
-            # print 2
+
             line = self.read_line()
-            if line == False:
+            if not line:
                 break
             line_splited = line.split("|")
             self.x_data.append(line_splited[1])
-            self.x_data.append(line_splited[2])
-            self.x_data.append(line_splited[3])
-        print "\n\nLists:\n\n"
-        print self.x_data
-        print self.y_data
-        print self.z_data
-        print "\n\n"
+            self.y_data.append(line_splited[2])
+            self.z_data.append(line_splited[3])
 
-        # x_acc = self.x_data[:len(self.x_data) - (len(self.x_data) % 128)]
-        # y_acc = self.y_data[:len(self.y_data) - (len(self.y_data) % 128)]
-        # z_acc = self.z_data[:len(self.z_data) - (len(self.z_data) % 128)]
-        #
-        # x_acc = x_acc[ : :len(x_acc)/128]
-        # y_acc = y_acc[ : :len(y_acc)/128]
-        # z_acc = z_acc[ : :len(z_acc)/128]
-        # activity = predict(x_acc, y_acc, z_acc)
-        # self.gui.showactivity(activity)
-        # self.gui.app.sendactivity(activity)
+        x_acc = self.x_data[:len(self.x_data) - (len(self.x_data) % 128)]
+        y_acc = self.y_data[:len(self.y_data) - (len(self.y_data) % 128)]
+        z_acc = self.z_data[:len(self.z_data) - (len(self.z_data) % 128)]
 
+        x_acc = x_acc[::len(x_acc) / 128]
+        y_acc = y_acc[::len(y_acc) / 128]
+        z_acc = z_acc[::len(z_acc) / 128]
 
+        x_acc = [str(float(ol) / 9.80665) for ol in x_acc]
+        y_acc = [str(float(ol) / 9.80665) for ol in y_acc]
+        z_acc = [str(float(ol) / 9.80665) for ol in z_acc]
 
-def processdata(rdata):
-    pass
-    # rdata = rdata.replace("\n", "")
-    # if "##########" not in rdata or "^^^^^^^^^^" not in rdata or "**********" not in rdata or rdata.count("**********")<2:
-    #         return False
-    # if rdata.count("^^^^^^^^^^") > 1:
-    #     rdata = rdata.split(" ##########")
-    #     dataprs = []
-    #     while '' in rdata:
-    #         rdata.remove('')
-    #     for i in range(len(rdata)):
-    #         if not rdata[i].count("**********")<2 and "^^^^^^^^^^" in rdata[i] and "##########" not in rdata[i]:
-    #             rdata[i]=rdata[i]+ " ##########"
-    #         else:
-    #             rdata[i]="False"
-    #     for i in range(len(rdata)):
-    #         r=processdata(rdata[i])
-    #         if r!=False:
-    #             dataprs.append(r)
-    #     return dataprs
-    # else:
-    #
-    #     if "##########" not in rdata or "^^^^^^^^^^" not in rdata or "**********" not in rdata or rdata.count("**********")<2 or rdata.count("^^^^^^^^^^")>1 or rdata.count("##########")>1:
-    #         return False
-    #     data = rdata[12:-11]
-    #     data = data.split(" ********** ")
-    #     data[0] = data[0].split("|")
-    #     data[2] = data[2].split("|")
-    #     data[1] = data[1].split("|")
-    #     x = []
-    #     y = []
-    #     z = []
-    #     for i in range(len(data[0])):
-    #         if data[0][i] != "":
-    #              x.append(float(data[0][i]) / 9.80665)
-    #     for i in range(len(data[1])):
-    #         if data[1][i] != "":
-    #             y.append(float(data[1][i]) / 9.80665)
-    #     for i in range(len(data[2])):
-    #         if data[2][i] != "":
-    #             z.append(float(data[2][i]) / 9.80665)
-    #     return [x, y, z]
+        activity = predict(x_acc, y_acc, z_acc)
+        self.gui.showactivity(activity)
+        self.gui.app.sendactivity(activity)
 
 
 def write(x, y, z):
